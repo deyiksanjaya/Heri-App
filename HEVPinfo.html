@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080909">
+  <meta name="description" content="HEVP — a theatrical EVP performance tool for magicians and mentalists. Ask a question. Record the silence. Fear the answer.">
+  <title>HEVP — Hear the Impossible</title>
+  <style>
+    :root {
+      --ink: #e8e1d7;
+      --muted: #9b9186;
+      --dim: #625a52;
+      --paper: #0a0909;
+      --panel: rgba(19, 16, 16, .76);
+      --line: rgba(218, 198, 181, .15);
+      --signal: #d7c4a8;
+      --signal-soft: rgba(215, 196, 168, .20);
+      --blood: #8e3f44;
+      --max: 1180px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; color: var(--ink); background: var(--paper);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased; overflow-x: hidden;
+    }
+    body::before { content: ""; position: fixed; inset: 0; pointer-events: none; opacity: .075; z-index: 20;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.95' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.52'/%3E%3C/svg%3E"); mix-blend-mode: screen; }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; }
+    .wrap { width: min(calc(100% - 80px), var(--max)); margin-inline: auto; }
+    .eyebrow { color: var(--signal); font: 600 10px/1.2 Georgia, "Times New Roman", serif; letter-spacing: .22em; text-transform: uppercase; }
+    .section { position: relative; padding: 140px 0; }
+    .section-head { max-width: 650px; margin-bottom: 62px; }
+    .section-head h2 { margin: 18px 0 16px; font-size: clamp(38px, 5vw, 66px); line-height: .98; letter-spacing: -.055em; font-weight: 450; }
+    .section-head p { color: var(--muted); font-size: 16px; line-height: 1.8; max-width: 540px; }
+    .display { font-family: Georgia, "Times New Roman", serif; font-size: clamp(56px, 8vw, 112px); line-height: .88; letter-spacing: -.08em; font-weight: 400; }
+    .btn { display: inline-flex; align-items: center; gap: 13px; padding: 14px 18px; border: 1px solid var(--line); border-radius: 2px; color: var(--ink); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; transition: .35s ease; }
+    .btn::after { content: "↗"; color: var(--signal); font-size: 16px; }
+    .btn:hover { border-color: rgba(215,196,168,.65); background: rgba(215,196,168,.07); box-shadow: 0 0 28px rgba(215,196,168,.1); transform: translateY(-2px); }
+    .btn.primary { color: #160f0d; border-color: var(--signal); background: var(--signal); }
+    .btn.primary::after { color: #160f0d; }
+    .btn.primary:hover { background: #ead9bf; box-shadow: 0 0 38px rgba(215,196,168,.24); }
+
+    header { position: absolute; z-index: 5; top: 0; left: 0; width: 100%; padding: 28px 0; }
+    nav { display: flex; justify-content: space-between; align-items: center; }
+    .brand { display: flex; align-items: center; gap: 10px; font: 700 14px Georgia, "Times New Roman", serif; letter-spacing: .15em; }
+    .brand-mark { width: 24px; height: 24px; border: 1px solid var(--signal); display: grid; place-items: center; color: var(--signal); font-size: 10px; }
+    .nav-links { display: flex; gap: 28px; color: var(--muted); font: 11px Georgia, "Times New Roman", serif; letter-spacing: .09em; text-transform: uppercase; }
+    .nav-links a:hover { color: var(--ink); }
+
+    .hero { min-height: 920px; display: flex; align-items: center; overflow: hidden; background: radial-gradient(circle at 74% 44%, rgba(100, 74, 55, .12), transparent 22%), radial-gradient(circle at 22% 95%, rgba(70, 20, 25, .18), transparent 32%), #080707; }
+    .hero::after { content: ""; position: absolute; inset: auto 0 0; height: 35%; background: linear-gradient(transparent, var(--paper)); pointer-events: none; }
+    .mist { position: absolute; width: 70vw; height: 46vw; border-radius: 50%; filter: blur(80px); opacity: .09; background: #c9b7a0; animation: drift 18s ease-in-out infinite alternate; }
+    .mist.one { top: 23%; left: -28%; } .mist.two { top: 45%; right: -35%; animation-delay: -7s; opacity: .06; }
+    @keyframes drift { to { transform: translate(90px, -34px) scale(1.12); } }
+    .hero-grid { display: grid; grid-template-columns: 1.08fr .92fr; align-items: center; gap: 60px; position: relative; z-index: 1; width: 100%; }
+    .hero-copy { padding: 70px clamp(12px, 3.6vw, 52px) 0; }
+    .hero h1 { margin: 22px 0 26px; max-width: 850px; }
+    .hero h1 em { font-style: normal; color: var(--signal); }
+    .hero-intro { max-width: 470px; margin: 0 0 32px; color: var(--muted); font-size: 17px; line-height: 1.7; }
+    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+    .micro { display: flex; gap: 16px; margin-top: 30px; color: var(--dim); font: 10px Georgia, "Times New Roman", serif; letter-spacing: .12em; text-transform: uppercase; }
+    .micro span:first-child { color: var(--blood); }
+    .signal-scene { height: 440px; position: relative; display: grid; place-items: center; }
+    .signal-ring { position: absolute; width: 390px; height: 390px; border: 1px solid rgba(215,196,168,.11); border-radius: 50%; box-shadow: 0 0 80px rgba(142,63,68,.10), inset 0 0 80px rgba(215,196,168,.04); animation: breathe 6s ease-in-out infinite; }
+    .signal-ring::before, .signal-ring::after { content: ""; position: absolute; inset: 34px; border: 1px solid rgba(215,196,168,.08); border-radius: inherit; }
+    .signal-ring::after { inset: 75px; border-style: dashed; animation: rotate 22s linear infinite; }
+    @keyframes breathe { 50% { transform: scale(1.06); opacity: .6; } } @keyframes rotate { to { transform: rotate(360deg); } }
+    .wave { position: relative; z-index: 1; width: min(100%, 520px); height: 160px; filter: drop-shadow(0 0 10px rgba(142,63,68,.42)); }
+    .wave path { fill: none; stroke: var(--signal); stroke-width: 1.1; stroke-linecap: round; stroke-dasharray: 2 9; animation: wave 5s linear infinite; }
+    .wave path:nth-child(2) { opacity: .3; stroke-width: 3; filter: blur(5px); animation-duration: 7s; }
+    @keyframes wave { to { stroke-dashoffset: -120; } }
+    .signal-label { position: absolute; z-index: 2; bottom: 40px; right: 8%; color: var(--signal); font: 10px Georgia, "Times New Roman", serif; letter-spacing: .15em; }
+    .signal-label::before { content: ""; display: inline-block; width: 6px; height: 6px; margin-right: 8px; border-radius: 50%; background: var(--blood); box-shadow: 0 0 10px var(--blood); }
+
+    .story { background: linear-gradient(180deg, #0b0909, #151010 50%, #0b0909); }
+    .story-grid { display: grid; grid-template-columns: .75fr 1.25fr; gap: 90px; align-items: center; }
+    .story-note { color: var(--dim); font: 11px/1.7 Georgia, "Times New Roman", serif; text-transform: uppercase; letter-spacing: .12em; }
+    .story-lines { border-left: 1px solid var(--line); padding-left: clamp(24px, 6vw, 90px); }
+    .story-lines p { margin: 0; color: #c8beb1; font-family: Georgia, "Times New Roman", serif; font-size: clamp(25px, 3vw, 45px); letter-spacing: -.04em; line-height: 1.15; }
+    .story-lines p + p { margin-top: 20px; color: var(--dim); }
+    .story-lines p:last-child { color: var(--signal); }
+    .word { display: inline-block; }
+
+    .product { background: #0b0d0c; }
+    .product-intro { display: grid; grid-template-columns: 1fr 1fr; gap: 100px; align-items: end; }
+    .product-intro h2 { margin: 22px 0 0; max-width: 630px; font-family: Georgia, "Times New Roman", serif; font-size: clamp(42px, 6vw, 82px); line-height: .96; letter-spacing: -.06em; font-weight: 400; }
+    .product-intro h2 span { color: var(--signal); }
+    .product-copy { color: var(--muted); font-size: 16px; line-height: 1.8; max-width: 440px; }
+    .product-copy strong { display: block; color: var(--ink); font-size: 20px; line-height: 1.25; font-weight: 400; margin-bottom: 16px; }
+    .rule { height: 1px; background: var(--line); margin: 86px 0 0; }
+
+    .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+    .feature { min-height: 250px; padding: 28px; background: var(--paper); transition: .4s ease; }
+    .feature:hover { background: #171111; box-shadow: inset 0 0 50px rgba(142,63,68,.08); }
+    .feature-num { color: var(--dim); font: 10px Georgia, "Times New Roman", serif; }
+    .feature-icon { color: var(--signal); font-size: 24px; margin: 46px 0 22px; }
+    .feature h3 { margin: 0 0 11px; font-family: Georgia, "Times New Roman", serif; font-size: 19px; font-weight: 400; letter-spacing: -.02em; }
+    .feature p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.7; }
+
+    .waveform-section { overflow: hidden; background: #120e0e; }
+    .waveform-section::before { content: ""; position: absolute; width: 700px; height: 700px; border-radius: 50%; top: -230px; right: -190px; background: rgba(142,63,68,.09); filter: blur(90px); }
+    .waveform-layout { display: grid; grid-template-columns: .8fr 1.2fr; gap: 90px; align-items: center; }
+    .waveform-copy h2 { margin: 18px 0 22px; font-family: Georgia, "Times New Roman", serif; font-size: clamp(42px, 5vw, 70px); line-height: .96; letter-spacing: -.06em; font-weight: 400; }
+    .waveform-copy p { color: var(--muted); line-height: 1.8; max-width: 420px; }
+    .monitor { position: relative; padding: 25px; border: 1px solid var(--line); background: rgba(10,6,6,.76); box-shadow: 0 25px 80px rgba(0,0,0,.42); }
+    .monitor-top { display: flex; justify-content: space-between; color: var(--dim); font: 10px Georgia, "Times New Roman", serif; letter-spacing: .12em; }
+    .monitor-live { color: var(--signal); }
+    .monitor-screen { margin: 24px 0; height: 210px; position: relative; overflow: hidden; background: repeating-linear-gradient(0deg, transparent 0 34px, rgba(215,196,168,.05) 35px), repeating-linear-gradient(90deg, transparent 0 48px, rgba(142,63,68,.05) 49px); }
+    .monitor-screen::after { content: ""; position: absolute; top: 0; bottom: 0; left: 62%; width: 1px; background: var(--blood); box-shadow: 0 0 14px var(--blood); }
+    .monitor .wave { width: 100%; height: 100%; }
+    .monitor-bottom { display: flex; justify-content: space-between; align-items: center; color: var(--dim); font: 10px Georgia, "Times New Roman", serif; }
+    .play { display: grid; place-items: center; width: 38px; height: 38px; border: 1px solid var(--signal); color: var(--signal); background: transparent; cursor: pointer; transition: .25s; }
+    .play:hover { background: var(--signal); color: #160f0d; }
+    .play.is-playing { animation: pulse .9s ease-in-out infinite alternate; }
+    @keyframes pulse { to { box-shadow: 0 0 22px var(--signal-soft); } }
+
+    .impact { background: #0b0d0c; }
+    .impact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 120px; }
+    .impact-quote { font-family: Georgia, "Times New Roman", serif; font-size: clamp(37px, 5vw, 68px); line-height: 1; letter-spacing: -.065em; font-weight: 400; }
+    .impact-quote span { color: var(--signal); }
+    .impact-copy { border-top: 1px solid var(--line); padding-top: 23px; margin-top: 100px; color: var(--muted); line-height: 1.8; }
+    .impact-copy p { margin: 0 0 24px; }
+    .audiences { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 62px; }
+    .audience { padding: 20px; min-height: 110px; border: 1px solid var(--line); color: var(--muted); font-size: 13px; line-height: 1.4; }
+    .audience strong { display: block; color: var(--ink); font-size: 16px; font-weight: 450; margin-bottom: 16px; }
+
+    .byok { padding: 85px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: #100c0c; }
+    .byok-inner { display: flex; justify-content: space-between; gap: 40px; align-items: center; }
+    .byok-copy { max-width: 650px; } .byok h2 { margin: 16px 0; font-family: Georgia, "Times New Roman", serif; font-size: clamp(28px, 4vw, 48px); line-height: 1; letter-spacing: -.05em; font-weight: 400; }
+    .byok p { color: var(--muted); line-height: 1.7; margin: 0; max-width: 570px; }
+    .key-chip { border: 1px solid var(--line); padding: 22px 25px; min-width: 230px; background: rgba(0,0,0,.2); }
+    .key-chip small { display: block; color: var(--dim); font: 10px Georgia, "Times New Roman", serif; letter-spacing: .13em; text-transform: uppercase; margin-bottom: 12px; }
+    .key-chip span { color: var(--signal); font: 14px Georgia, "Times New Roman", serif; }
+
+    .final { min-height: 650px; display: grid; place-items: center; text-align: center; background: radial-gradient(circle at 50% 44%, rgba(91, 28, 33, .22), transparent 31%), #080707; }
+    .final h2 { margin: 22px auto 30px; max-width: 950px; font-family: Georgia, "Times New Roman", serif; font-size: clamp(50px, 8vw, 105px); line-height: .88; letter-spacing: -.08em; font-weight: 400; }
+    .final h2 em { color: var(--signal); font-style: normal; }
+    .final p { color: var(--muted); margin: 0 auto 32px; font: 12px Georgia, "Times New Roman", serif; letter-spacing: .15em; text-transform: uppercase; }
+    .video-wrap { position: relative; width: min(100%, 820px); margin: 40px auto 0; padding: 10px; border: 1px solid rgba(215,196,168,.24); background: #030303; box-shadow: 0 0 55px rgba(142,63,68,.15), 0 25px 70px rgba(0,0,0,.55); }
+    .video-wrap::before { content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 2; opacity: .12; background: repeating-linear-gradient(0deg, transparent 0 5px, rgba(233,225,215,.7) 6px, transparent 7px 13px); mix-blend-mode: screen; }
+    .video-wrap iframe { display: block; width: 100%; aspect-ratio: 16 / 9; border: 0; background: #080707; }
+    .video-note { margin-top: 14px; color: var(--dim); font: 10px Georgia, "Times New Roman", serif; letter-spacing: .12em; text-transform: uppercase; }
+    footer { padding: 32px 0; border-top: 1px solid var(--line); color: var(--dim); font: 10px Georgia, "Times New Roman", serif; letter-spacing: .1em; text-transform: uppercase; }
+    .footer-inner { display: flex; justify-content: space-between; gap: 20px; align-items: center; }
+    .footer-links { display: flex; gap: 20px; } .footer-links a:hover { color: var(--ink); }
+    .reveal { opacity: 0; transform: translateY(26px); transition: opacity .9s ease, transform .9s ease; } .reveal.visible { opacity: 1; transform: none; }
+
+    @media (max-width: 800px) {
+      .wrap { width: min(calc(100% - 42px), var(--max)); } .section { padding: 90px 0; }
+      .nav-links { display: none; } .hero { min-height: 820px; } .hero-grid, .story-grid, .product-intro, .waveform-layout, .impact-grid { grid-template-columns: 1fr; gap: 52px; }
+      .hero-copy { padding: 110px 20px 0; } .signal-scene { min-height: 410px; height: 410px; margin-top: -15px; padding-inline: 14px; } .iphone-stage { height: 400px; } .iphone { width: 165px; border-radius: 29px; padding: 6px; } .phone-screen { border-radius: 23px; } .iphone-back { transform: translate(-48px, 14px) rotate(-8deg); } .iphone-front { transform: translate(48px, -12px) rotate(6deg); } .phone-speaker { top: 10px; width: 43px; height: 13px; } .signal-ring { width: 275px; height: 275px; } .wave { height: 110px; }
+      .story-lines { padding-left: 23px; } .product-intro { gap: 30px; } .rule { margin-top: 55px; } .features { grid-template-columns: 1fr; } .feature { min-height: auto; }
+      .impact-copy { margin-top: 0; } .audiences { grid-template-columns: repeat(2, 1fr); } .byok-inner { align-items: flex-start; flex-direction: column; } .key-chip { width: 100%; }
+      .footer-inner { align-items: flex-start; flex-direction: column; line-height: 1.7; }
+    }
+    /* Logo-led horror treatment */
+    .phone-aura { position: absolute; width: 430px; height: 430px; border-radius: 50%; background: radial-gradient(circle, rgba(142,63,68,.28), transparent 56%), radial-gradient(circle at 75% 30%, rgba(32,125,80,.18), transparent 52%); filter: blur(26px); animation: aura-breathe 5s ease-in-out infinite; }
+    .iphone-stage { position: relative; width: min(100%, 500px); height: 510px; display: flex; justify-content: center; align-items: center; perspective: 1000px; }
+    .iphone { position: absolute; width: 205px; padding: 8px; border: 1px solid rgba(233,225,215,.48); border-radius: 35px; background: linear-gradient(145deg, #282323, #050505 45%, #241719); box-shadow: 0 22px 55px rgba(0,0,0,.72), 0 0 0 2px rgba(0,0,0,.8), 0 0 35px rgba(142,63,68,.22); }
+    .iphone::after { content: ""; position: absolute; inset: 0; border-radius: 34px; pointer-events: none; background: linear-gradient(120deg, rgba(255,255,255,.18), transparent 18%, transparent 72%, rgba(142,63,68,.16)); mix-blend-mode: screen; }
+    .iphone-back { transform: translate(-72px, 18px) rotate(-9deg); opacity: .82; }
+    .iphone-front { transform: translate(74px, -16px) rotate(7deg); z-index: 2; }
+    .phone-screen { overflow: hidden; border-radius: 28px; background: #000; position: relative; aspect-ratio: 1206 / 2622; }
+    .phone-screen img { display: block; width: 100%; height: 100%; object-fit: cover; }
+    .phone-speaker { position: absolute; z-index: 3; top: 14px; left: 50%; width: 54px; height: 17px; border-radius: 18px; transform: translateX(-50%); background: #050505; box-shadow: inset 0 1px 2px rgba(255,255,255,.08); }
+    .iphone-front .phone-speaker { background: #111; }
+    .iphone-stage::after { content: "REC / 01"; position: absolute; right: 6px; bottom: 0; color: rgba(233,225,215,.62); font: italic 11px Georgia, "Times New Roman", serif; letter-spacing: .16em; }
+    .signal-scene { min-height: 540px; height: auto; }
+    .brand-logo { width: 35px; height: 35px; object-fit: cover; border-radius: 10px; border: 1px solid rgba(215,196,168,.28); filter: saturate(.92) contrast(1.12); box-shadow: 0 0 18px rgba(142,63,68,.24); }
+    .brand span { color: var(--ink); }
+    .hero { background: radial-gradient(ellipse at 78% 45%, rgba(142,63,68,.22), transparent 19%), radial-gradient(ellipse at 76% 47%, rgba(24,93,61,.14), transparent 31%), linear-gradient(115deg, #080707 0%, #0d0809 54%, #070a08 100%); }
+    .hero::before { content: ""; position: absolute; inset: 0; opacity: .17; pointer-events: none; background: repeating-linear-gradient(0deg, transparent 0 6px, rgba(215,196,168,.08) 7px, transparent 8px 17px); mix-blend-mode: screen; animation: scanlines 11s linear infinite; }
+    @keyframes scanlines { to { transform: translateY(34px); } }
+    .hero h1 em, .story-lines p:last-child, .product-intro h2 span, .impact-quote span { color: #e3d6c0; text-shadow: 0 0 22px rgba(142,63,68,.5); }
+    .signal-scene { min-height: 440px; height: auto; }
+    .logo-aura { position: absolute; width: 360px; height: 360px; border-radius: 50%; background: radial-gradient(circle, rgba(142,63,68,.25), transparent 57%), radial-gradient(circle at 72% 35%, rgba(32,125,80,.16), transparent 48%); filter: blur(24px); animation: aura-breathe 5s ease-in-out infinite; }
+    @keyframes aura-breathe { 50% { transform: scale(1.12); opacity: .7; } }
+    .logo-frame { position: relative; width: min(100%, 410px); padding: 11px; border: 1px solid rgba(215,196,168,.25); border-radius: 23%; background: #020202; box-shadow: 0 0 0 7px rgba(142,63,68,.045), 0 0 65px rgba(142,63,68,.2), 0 28px 80px rgba(0,0,0,.65); transform: rotate(1.4deg); animation: logo-haunt 7s ease-in-out infinite; }
+    .logo-frame::before { content: ""; position: absolute; inset: -1px; border-radius: inherit; pointer-events: none; background: linear-gradient(112deg, rgba(157,44,51,.7), transparent 28%, transparent 65%, rgba(47,138,85,.5)); mix-blend-mode: screen; opacity: .48; }
+    .logo-frame img { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 19%; filter: contrast(1.06) saturate(1.16); }
+    .logo-scan { position: absolute; left: 8%; right: 8%; top: 57%; height: 1px; background: rgba(239,227,210,.8); box-shadow: 0 0 18px rgba(239,227,210,.8); opacity: .6; animation: scan 3.8s ease-in-out infinite; }
+    @keyframes scan { 0%,100% { transform: translateY(-112px); opacity: 0; } 42%,61% { opacity: .65; } 50% { transform: translateY(112px); } }
+    @keyframes logo-haunt { 50% { transform: rotate(-1deg) translateY(-5px); } }
+    .signal-label { display: none; }
+    .signal-label::before { background: var(--blood); box-shadow: 0 0 13px var(--blood); }
+    .features, .monitor, .audience, .key-chip { border-color: rgba(218,198,181,.18); }
+    .feature { background: rgba(12,8,8,.78); }
+    .feature-icon { color: #d79b8d; text-shadow: 0 0 13px rgba(142,63,68,.65); }
+    .monitor { border-radius: 4px; transform: rotate(-.4deg); }
+    .monitor-screen { box-shadow: inset 0 0 45px rgba(142,63,68,.12); }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; } .reveal { opacity: 1; transform: none; } }
+  </style>
+</head>
+<body>
+  <header><div class="wrap"><nav aria-label="Primary navigation"><a class="brand" href="#top"><img class="brand-logo" src="logoHEVP.jpg" alt="HEVP logo"><span>HEVP</span></a><div class="nav-links"><a href="#experience">Experience</a><a href="#features">Capabilities</a><a href="#access">Access</a></div><a class="btn" href="#film">Watch the film</a></nav></div></header>
+
+  <main id="top">
+    <section class="hero" aria-labelledby="hero-title"><div class="mist one"></div><div class="mist two"></div><div class="wrap hero-grid">
+      <div class="hero-copy reveal"><div class="eyebrow">Heri's Electronic Voice Phenomenon / 001</div><h1 id="hero-title" class="display">What if something answered <em>from the other side?</em></h1><p class="hero-intro">Ask a question. Record the silence. Hear the impossible. HEVP turns a quiet room into the most unsettling moment of your performance.</p><div class="hero-actions"><a class="btn primary" href="#film">Watch trailer</a></div><div class="micro"><span>● Signal detected</span><span>00:13:07:04</span></div></div>
+      <div class="signal-scene reveal" aria-label="HEVP app shown on iPhone mockups"><div class="phone-aura"></div><div class="iphone-stage"><div class="iphone iphone-back"><div class="phone-speaker"></div><div class="phone-screen"><img src="mainscreen.PNG" alt="HEVP main screen"></div></div><div class="iphone iphone-front"><div class="phone-speaker"></div><div class="phone-screen"><img src="recorder.PNG" alt="HEVP recordings screen"></div></div></div></div>
+    </div></section>
+
+    <section class="story section" id="experience"><div class="wrap story-grid"><div class="story-note reveal">A captured moment<br><br>Room tone / 00:00:13<br>Question / 00:00:21<br>Playback / 00:00:34</div><div class="story-lines reveal"><p>You ask, “Is there anyone else here?”</p><p>The room is silent.</p><p>The waveform moves.</p><p>You press play.</p><p>A whisper says, “I am here.”</p></div></div></section>
+
+    <section class="product section" id="product"><div class="wrap"><div class="product-intro"><div class="reveal"><div class="eyebrow">The instrument</div><h2>Make silence feel like a <span>presence.</span></h2></div><div class="product-copy reveal"><strong>HEVP is a professional paranormal performance tool for magicians and mentalists.</strong>It transforms your phone into a convincing EVP experience — built for theatrical pacing, impossible revelations, and the moment an audience stops knowing what to believe.</div></div><div class="rule"></div></div></section>
+
+    <section class="section" id="features"><div class="wrap"><div class="section-head reveal"><div class="eyebrow">Inside the signal</div><h2>Everything you need to make the unseen feel close.</h2><p>Designed around a clean performance flow, so your attention stays with the room — and the reaction.</p></div><div class="features reveal">
+      <article class="feature"><div class="feature-num">01 / 06</div><div class="feature-icon">∿</div><h3>Realistic EVP effects</h3><p>Natural pauses, room tone, and spectral detail that make the response feel captured — not played.</p></article>
+      <article class="feature"><div class="feature-num">02 / 06</div><div class="feature-icon">◌</div><h3>Custom performance options</h3><p>Shape the question, the timing, and the voice to fit your routine and your audience.</p></article>
+      <article class="feature"><div class="feature-num">03 / 06</div><div class="feature-icon">↗</div><h3>Hands-off performance flow</h3><p>Keep your hands free and your focus where it belongs: on the person waiting for an answer.</p></article>
+      <article class="feature"><div class="feature-num">04 / 06</div><div class="feature-icon">⌁</div><h3>Portable by design</h3><p>A paranormal experience that travels with you — from close-up rooms to the biggest stage.</p></article>
+      <article class="feature"><div class="feature-num">05 / 06</div><div class="feature-icon">✦</div><h3>AI-powered voices</h3><p>Create responses with the texture, distance, and unease your story demands.</p></article>
+      <article class="feature"><div class="feature-num">06 / 06</div><div class="feature-icon">⌘</div><h3>Bring your own key</h3><p>Connect your own ElevenLabs account and keep control of your voice generation credits.</p></article>
+    </div></div></section>
+
+    <section class="waveform-section section"><div class="wrap waveform-layout"><div class="waveform-copy reveal"><div class="eyebrow">The evidence</div><h2>Turn silence into suspense.</h2><p>Every line is a question. Every spike is a possibility. HEVP makes audio feel physical — like something in the room is trying to cross over.</p></div><div class="monitor reveal"><div class="monitor-top"><span>EVP_CAPTURE_013</span><span class="monitor-live">● SIGNAL / ACTIVE</span></div><div class="monitor-screen"><svg class="wave" viewBox="0 0 600 160" preserveAspectRatio="none" aria-hidden="true"><path d="M0 82 L28 82 L40 81 L52 82 L68 82 L78 82 L90 80 L100 83 L112 82 L128 82 L140 82 L150 84 L160 79 L170 82 L180 82 L198 82 L210 82 L220 82 L229 81 L236 82 L244 75 L249 90 L255 82 L267 82 L282 82 L294 82 L305 82 L315 82 L323 80 L330 84 L338 82 L350 82 L361 82 L370 82 L380 81 L388 83 L398 82 L408 82 L417 82 L423 69 L428 96 L435 82 L445 82 L455 82 L464 82 L478 82 L488 82 L500 82 L510 78 L516 86 L523 82 L539 82 L552 82 L562 82 L573 82 L586 82 L600 82"/><path d="M0 82 L28 82 L40 81 L52 82 L68 82 L78 82 L90 80 L100 83 L112 82 L128 82 L140 82 L150 84 L160 79 L170 82 L180 82 L198 82 L210 82 L220 82 L229 81 L236 82 L244 75 L249 90 L255 82 L267 82 L282 82 L294 82 L305 82 L315 82 L323 80 L330 84 L338 82 L350 82 L361 82 L370 82 L380 81 L388 83 L398 82 L408 82 L417 69 L428 96 L435 82 L445 82 L455 82 L464 82 L478 82 L488 82 L500 82 L510 78 L516 86 L523 82 L539 82 L552 82 L562 82 L573 82 L586 82 L600 82"/></svg></div><div class="monitor-bottom"><span>00:00:34.08 — 00:00:48.22</span><button class="play" type="button" aria-label="Play simulated recording">▶</button><span>WHISPER / 01</span></div></div></div></section>
+
+    <section class="impact section"><div class="wrap"><div class="impact-grid"><div class="impact-quote reveal">The scariest things are not always seen.<br><span>Sometimes, they answer.</span></div><div class="impact-copy reveal"><p>HEVP creates the kind of pause that performers live for: a moment where the audience questions whether the sound came from the device, the room, or somewhere they cannot name.</p><p>It is not about proving the paranormal. It is about giving a story a pulse — and letting the mind do the haunting.</p></div></div><div class="audiences reveal"><div class="audience"><strong>01</strong>Mentalists</div><div class="audience"><strong>02</strong>Magicians</div><div class="audience"><strong>03</strong>Paranormal storytellers</div><div class="audience"><strong>04</strong>Dark theatrical performers</div></div></div></section>
+
+    <section class="byok" id="access"><div class="wrap byok-inner"><div class="byok-copy reveal"><div class="eyebrow">A grounded connection</div><h2>Your account. Your credits. Your voice.</h2><p>HEVP uses a Bring Your Own Key model. Connect your own ElevenLabs API key to generate voices through your ElevenLabs account and credits. Clear, private, and in your control.</p></div><div class="key-chip reveal"><small>Connection status</small><span>ELEVENLABS / READY</span></div></div></section>
+
+    <section class="final" id="film"><div class="wrap reveal"><div class="eyebrow">The room is waiting</div><h2>Some voices are better left <em>unheard.</em></h2><p>Ask a question. Record the silence. Fear the answer.</p><div class="video-wrap"><iframe src="https://www.youtube-nocookie.com/embed/VIDEO_ID" title="HEVP video" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div><div class="video-note">YouTube embed placeholder — replace VIDEO_ID with your video ID</div></div></section>
+  </main>
+  <footer><div class="wrap footer-inner"><span>© 2026 HEVP / Heri's Electronic Voice Phenomenon</span><span>For theatrical entertainment only — designed for magicians &amp; mentalists</span><div class="footer-links"><a href="mailto:support@hevp.app">Support</a><a href="/privacy">Privacy</a><a href="mailto:hello@hevp.app">Contact</a></div></div></footer>
+  <script>
+    const observer = new IntersectionObserver((entries) => entries.forEach((entry) => { if (entry.isIntersecting) entry.target.classList.add('visible'); }), { threshold: .14 });
+    document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+    const play = document.querySelector('.play');
+    play.addEventListener('click', () => { play.classList.toggle('is-playing'); play.textContent = play.classList.contains('is-playing') ? 'Ⅱ' : '▶'; });
+  </script>
+</body>
+</html>
